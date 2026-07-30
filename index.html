@@ -185,32 +185,39 @@
 
             // --- ENVOI VERS CLOUDFLARE WORKER ---
             // REMPLACEZ L'URL CI-DESSOUS PAR CELLE DE VOTRE WORKER (ex: https://mon-avis.user.workers.dev)
-            const WORKER_URL = 'https://script.google.com/macros/s/AKfycbxykRoxa52Y3ffTnAw7ZBrCCFVk4fYxUnMy1dfWXbIz7EOhCZXphiP_GvAQduAPuVum/exec'; 
+            const WEB3FORMS_KEY = "861c255b-906f-478b-9141-3b70b8226908";
 
-            fetch(WORKER_URL, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(donnees)
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Erreur serveur: ' + response.status);
-                return response.json();
-            })
-            .then(data => {
-                btn.textContent = "Merci ! Avis enregistré.";
-                btn.style.backgroundColor = "#4CAF50";
-                console.log('Succès:', data);
-                // Optionnel : vider le formulaire
-                // document.getElementById('xiaomiForm').reset();
-            })
-            .catch((error) => {
-                console.error('Erreur:', error);
-                btn.textContent = "Échec de l'envoi";
-                btn.style.backgroundColor = "#f44336";
-                btn.disabled = false;
-                alert("Une erreur est survenue lors de l'envoi. Vérifiez la console (F12).");
-            });
-        });
-    </script>
+const formData = new FormData();
+
+formData.append("access_key", WEB3FORMS_KEY);
+formData.append("subject", "Nouvel avis Xiaomi");
+formData.append("from_name", "Étude Xiaomi");
+
+Object.keys(donnees).forEach(key => {
+    formData.append(key, donnees[key] ?? "");
+});
+
+fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    body: formData
+})
+.then(response => response.json())
+.then(data => {
+    if (data.success) {
+        btn.textContent = "Merci ! Avis enregistré.";
+        btn.style.backgroundColor = "#4CAF50";
+        console.log("Succès:", data);
+    } else {
+        throw new Error(data.message);
+    }
+})
+.catch((error) => {
+    console.error("Erreur:", error);
+    btn.textContent = "Échec de l'envoi";
+    btn.style.backgroundColor = "#f44336";
+    btn.disabled = false;
+    alert("Une erreur est survenue lors de l'envoi.");
+    });
+</script>
 </body>
 </html>   
