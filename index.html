@@ -457,13 +457,11 @@
 
         // 2. Envoi avec fetch
         // REMPLACEZ l'URL ci-dessous par celle de votre script serveur (ex: 'traitement.php')
-        fetch('https://votre-serveur.com/api/submit', { 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json' // Important pour dire au serveur qu'on envoie du JSON
-            },
-            body: JSON.stringify(donnees)
-        })
+        fetch('recu.xiaomi-etude.workers.dev', { 
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(donnees)
+})
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erreur serveur: ' + response.status);
